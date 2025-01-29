@@ -1,6 +1,3 @@
-import bcrypt from 'bcrypt';
-import * as mysql from 'mysql2/promise';
-import { createConnection } from "../database";
 import { Router } from "express";
 import { EventService } from '../services/event-service';
 

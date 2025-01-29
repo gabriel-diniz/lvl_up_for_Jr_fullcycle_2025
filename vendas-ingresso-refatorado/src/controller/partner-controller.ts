@@ -6,9 +6,8 @@ export const partnerRoutes = Router();
 
 partnerRoutes.post('/register', async (req, res) => {
     const { name, email, password, company_name } = req.body;
-    
     const partnerService = new PartnerService();
-    const result = partnerService.register({
+    const result = await partnerService.register({
         name,
         email,
         password,
@@ -21,7 +20,7 @@ partnerRoutes.post('/events', async (req, res) => {
     const { name, description, date, location } = req.body;
     const userId = req.user!.id;
     const partnerService = new PartnerService();
-    const partner = await partnerService.findUserById(userId);
+    const partner = await partnerService.findByUserId(userId);
     
     if(!partner){
         res.status(403).json({ message: "Not authorized"});
@@ -29,7 +28,7 @@ partnerRoutes.post('/events', async (req, res) => {
     }
     const eventService = new EventService();
     const result = await eventService.create({
-        name, description, date, location, partnerId: partner.id,
+        name, description, date: new Date(date), location, partnerId: partner.id,
     });
     res.status(201).json(result)
 });
@@ -37,7 +36,7 @@ partnerRoutes.post('/events', async (req, res) => {
 partnerRoutes.get('/events', async (req, res) => {
     const userId = req.user!.id;
     const partnerService = new PartnerService();
-    const partner = await partnerService.findUserById(userId);
+    const partner = await partnerService.findByUserId(userId);
     if(!partner){
         res.status(403).json({ message: "Not authorized"});
         return;
@@ -51,7 +50,7 @@ partnerRoutes.get('/events/:eventId', async (req, res) => {
     const {eventId} = req.params;
     const userId = req.user!.id;
     const partnerService = new PartnerService();
-    const partner = await partnerService.findUserById(userId);
+    const partner = await partnerService.findByUserId(userId);
     if(!partner){
         res.status(403).json({ message: "Not authorized"});
         return;
